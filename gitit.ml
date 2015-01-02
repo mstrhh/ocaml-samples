@@ -62,6 +62,6 @@ let _ = try
 
 (* or in 1 line: 
 
-let _ = try main1  List.tl (List.tl (Array.to_list Sys.argv)); exit 0 with Failure s -> prerr_endline s
+let _ = try main1 (List.tl (Array.to_list Sys.argv)); exit 0 with Failure s -> prerr_endline s
 
 *)
