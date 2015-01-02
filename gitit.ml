@@ -1,10 +1,13 @@
 
 (**
- Simple little helper
- git add + git commit + git push
- script will call ssh-add if no key loaded
- Compile: ocamlopt -o gitit gitit.ml
+  Simple little helper
+  git add + git commit + git push
+  script will call ssh-add if no key loaded
+  Compile: ocamlopt -o gitit gitit.ml
       or  ocamlc  -o gitit gitit.ml
+      
+  Please note: there is no ;; in the code, I just need some single semicolon for an expression sequence.
+  Writing let is enough to start a new expression/definition.
 *)
 
 (** Print usage to stdout *)
