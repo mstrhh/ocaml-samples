@@ -12,3 +12,4 @@ structure does not play a role, it can be difficult to see how you can build you
 on list data.
 
 - [How to execute](how-to-execute.md) your program
+- a [small helper script](gitit.ml), well commented, to commit your changes to git repo
