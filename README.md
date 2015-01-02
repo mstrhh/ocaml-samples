@@ -11,3 +11,6 @@ Especially if you are coming from an imperative languages and scripting backgrou
 structure does not play a role, it can be difficult to see how you build your application
 on it.
 
+Disclaimer: this repo was started in Jan. 2015 and is either empty, or a mess. 
+I will first put some stuff, and build a structure late.
+
