@@ -1,5 +1,5 @@
 
 
 clean:
-    rm -v *.cmi *.cmo *.cmx *.o
+	rm -v *.cmi *.cmo *.cmx *.o
     
