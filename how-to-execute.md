@@ -72,7 +72,7 @@ Now you have a file *temp* in your directory, which is an ELF executable with si
 
 ### Use a package called ocamlscript
 
-This package with name _ocamlscript_ does what Python does: upon startup, check to see if you have a bytecode file corresponding to your script file. If not create it - which means compile it, Then execute the bytecode file.
+This package with name _ocamlscript_ does what Python does: upon startup, check to see if you have a bytecode file corresponding to your script file. If not create it - which means compile it, then execute the bytecode file.
 
 If you have it installed (get it [here](http://opam.ocaml.org/packages/)), create a file like this:
 
@@ -93,7 +93,7 @@ Make the script executable and run it. You now have a file in your directory wit
 
 True scripting with ocaml:
 - easy to read, easy to change
-- needs compiler and libraries installed
+- on execute: needs compiler and libraries installed
 - compile time: not noticeable
 - run time efficient: acceptable
 
@@ -101,7 +101,7 @@ Compile to byte code:
 - binary is decoupled from source, find your code first to have a look
 - edit - compile - run cycle, slow
 - small executable
-- needs compiler and libraries installed
+- on execute: needs ocamlrun installed
 - compile time: quite short
 - run time efficient: good
 
@@ -109,15 +109,15 @@ Compile to native code:
 - binary is decoupled from source
 - edit - compile - run cycle, slow
 - big executable
-- does not need compiler and libraries installed
+- on execute: does not need ocaml components
 - compile time: noticeable
 - run time efficient: very good, roughly 1/3 of bytecode runtime.
 
 Using ocamlscript:
 - easy to read, easy to change
-- needs compiler and libraries installed
+- on execute: needs compiler and libraries installed
 - compile time: depends on using ocamlc or ocamlopt
 - run time efficient: depends on using ocamlc or ocamlopt
 - watch out: upon compile (first execution) wants to write to source directory
 
-So now you can choose your method. As to compile and run timings, this should be qualified with numbers. We do that real soon now...
+So now you can choose your method. As to compile and run timings, this should be qualified with numbers. We'll do that, sooner or later.
