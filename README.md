@@ -12,5 +12,5 @@ structure does not play a role, it can be difficult to see how you build your ap
 on it.
 
 Disclaimer: this repo was started in Jan. 2015 and is either empty, or a mess. 
-I will first put some stuff, and build a structure late.
+I will first put some stuff, and build a structure later.
 
