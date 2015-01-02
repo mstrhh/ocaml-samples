@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>gitit.ml</title>
+</head>
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+
+<span style='color:#505050;'>(*</span><span style='color:#505050;'>*</span>
+<span style='color:#505050;'>  Simple little helper</span>
+<span style='color:#505050;'>  git add + git commit + git push</span>
+<span style='color:#505050;'>  script will call ssh-add if no key loaded</span>
+<span style='color:#505050;'>  Compile: ocamlopt -o gitit gitit.ml</span>
+<span style='color:#505050;'>      or  ocamlc  -o gitit gitit.ml</span>
+<span style='color:#505050;'>      </span>
+<span style='color:#505050;'>  Please note: there is no ;; in the code, I just need some single semicolon for an expression sequence.</span>
+<span style='color:#505050;'>  Writing let is enough to start a new expression/definition.</span>
+<span style='color:#505050;'>*)</span>
+
+<span style='color:#505050;'>(*</span><span style='color:#505050;'>* Print usage to stdout </span><span style='color:#505050;'>*)</span>
+<b>let</b> <span style='color:#006600;'>scriptinfo</span> <span style='color:#901010;'>(</span><span style='color:#901010;'>)</span> = 
+  <b>Printf</b><b>.</b><span style='color:#006600;'>printf</span> <span style='color:#bf0303;'>&quot;</span><span style='color:#924c9d;'>\t</span><span style='color:#bf0303;'>git-Helper: git add + git commit + git push for 1 File</span><span style='color:#924c9d;'>\n</span><span style='color:#bf0303;'>&quot;</span>;
+  <b>Printf</b><b>.</b><span style='color:#006600;'>printf</span> <span style='color:#bf0303;'>&quot;</span><span style='color:#924c9d;'>\t</span><span style='color:#bf0303;'>Call with: 1. filename 2. commit message, quoted as must be for command line use.</span><span style='color:#924c9d;'>\n</span><span style='color:#bf0303;'>&quot;</span>
+
+<span style='color:#505050;'>(*</span><span style='color:#505050;'>* check if some private key loaded, easy: ssh-add uses return codes consistently </span><span style='color:#505050;'>*)</span>
+<b>let</b> <span style='color:#006600;'>check_sshkey</span> <span style='color:#901010;'>(</span><span style='color:#901010;'>)</span> = 
+  <b>let</b> <span style='color:#006600;'>listcmd</span> = <span style='color:#bf0303;'>&quot;ssh-add -l 1&gt;/dev/null 2&gt;&amp;1&quot;</span> <b>in</b>
+    <b>match</b> <b>Sys</b><b>.</b><span style='color:#006600;'>command</span> <span style='color:#006600;'>listcmd</span> <b>with</b>
+    | <span style='color:#b08000;'>0</span> -&gt; <b>true</b>
+    | <span style='color:#b08000;'>1</span> -&gt; <span style='color:#901010;'>(</span><b>Sys</b><b>.</b><span style='color:#006600;'>command</span> <span style='color:#bf0303;'>&quot;ssh-add&quot;</span><span style='color:#901010;'>)</span> = <span style='color:#b08000;'>0</span>
+    | <span style='color:#b08000;'>2</span> -&gt; <span style='color:#006600;'>failwith</span> <span style='color:#bf0303;'>&quot;gitit: ssh-agent not running, no public-key session available. &quot;</span>
+    | <span style='color:#006600;'>_</span> -&gt; <span style='color:#006600;'>failwith</span> <span style='color:#bf0303;'>&quot;gitit: unknown error when running ssh-add. &quot;</span>
+
+            
+<span style='color:#505050;'>(*</span><span style='color:#505050;'>* main, using pattern matching for parameter list</span>
+<span style='color:#505050;'>    </span>
+<span style='color:#505050;'>    You will often see the first line as:</span>
+<span style='color:#505050;'>    let main = function</span>
+<span style='color:#505050;'>    </span>
+<span style='color:#505050;'>    Why? Because it is shorter, no need to introduce a name for the argument.</span>
+<span style='color:#505050;'>    function always takes 1 parameter, and you can start with pattern matching</span>
+<span style='color:#505050;'>    right away, variable binding is done there.</span>
+
+<span style='color:#505050;'>*)</span>            
+<b>let</b> <span style='color:#006600;'>main1</span> <span style='color:#006600;'>args</span> = <b>match</b> <span style='color:#006600;'>args</span> <b>with</b>
+  | <span style='color:#006600;'>fn</span> :: <span style='color:#006600;'>cmsg</span> :: <span style='color:#901010;'>[</span><span style='color:#901010;'>]</span> -&gt;
+	<b>let</b> <span style='color:#006600;'>fn</span> = <b>Filename</b><b>.</b><span style='color:#006600;'>quote</span> <span style='color:#006600;'>fn</span>
+	<b>and</b> <span style='color:#006600;'>cmsg</span> = <b>Filename</b><b>.</b><span style='color:#006600;'>quote</span> <span style='color:#006600;'>cmsg</span> 
+	<b>and</b> <span style='color:#006600;'>spacer</span> = <span style='color:#bf0303;'>&quot; &quot;</span> <b>in</b>
+          <b>if</b> <span style='color:#006600;'>check_sshkey</span> <span style='color:#901010;'>(</span><span style='color:#901010;'>)</span> <b>then</b>
+            <b>if</b> <span style='color:#901010;'>(</span><b>Sys</b><b>.</b><span style='color:#006600;'>command</span> <span style='color:#901010;'>(</span><span style='color:#bf0303;'>&quot;git add &quot;</span> ^ <span style='color:#006600;'>fn</span><span style='color:#901010;'>)</span><span style='color:#901010;'>)</span> = <span style='color:#b08000;'>0</span> <b>then</b>
+              <b>if</b> <span style='color:#901010;'>(</span><b>Sys</b><b>.</b><span style='color:#006600;'>command</span> <span style='color:#901010;'>(</span><span style='color:#bf0303;'>&quot;git commit -m &quot;</span> ^ <span style='color:#006600;'>cmsg</span> ^ <span style='color:#006600;'>spacer</span> ^ <span style='color:#006600;'>fn</span><span style='color:#901010;'>)</span> <span style='color:#901010;'>)</span> = <span style='color:#b08000;'>0</span> <b>then</b>
+                <span style='color:#006600;'>exit</span> <span style='color:#901010;'>(</span><b>Sys</b><b>.</b><span style='color:#006600;'>command</span> <span style='color:#bf0303;'>&quot;git push&quot;</span><span style='color:#901010;'>)</span> <span style='color:#505050;'>(*</span><span style='color:#505050;'> exit with return code from Sys.command </span><span style='color:#505050;'>*)</span>
+               <b>else</b> <span style='color:#006600;'>failwith</span> <span style='color:#bf0303;'>&quot;Error in git commit&quot;</span>
+            <b>else</b> <span style='color:#006600;'>failwith</span> <span style='color:#bf0303;'>&quot;Error in git add&quot;</span>
+  | <span style='color:#006600;'>_</span> -&gt; <span style='color:#006600;'>scriptinfo</span> <span style='color:#901010;'>(</span><span style='color:#901010;'>)</span>
+
+<span style='color:#505050;'>(*</span><span style='color:#505050;'>* call to main, with exception handling.</span>
+<span style='color:#505050;'>    Note the stumbling block in Sys.argv: on position 0 there is the executable name,</span>
+<span style='color:#505050;'>    you would normally cut this off (see also Sys.executable_name).</span>
+<span style='color:#505050;'>    And for pattern matching you need a list.</span>
+<span style='color:#505050;'>    </span>
+<span style='color:#505050;'>    The variable named _ is an anomymous variable, for throw away values.</span>
+<span style='color:#505050;'>*)</span>
+<b>let</b> <span style='color:#006600;'>_</span> = <b>try</b>
+          <span style='color:#006600;'>main1</span> <span style='color:#901010;'>(</span><b>List</b><b>.</b><span style='color:#006600;'>tl</span> <span style='color:#901010;'>(</span><b>Array</b><b>.</b><span style='color:#006600;'>to_list</span> <b>Sys</b><b>.</b><span style='color:#006600;'>argv</span><span style='color:#901010;'>)</span><span style='color:#901010;'>)</span>; <span style='color:#006600;'>exit</span> <span style='color:#b08000;'>0</span>
+        <b>with</b> <span style='color:#0057ae;'>Failure</span> <span style='color:#006600;'>s</span> -&gt; <span style='color:#006600;'>prerr_endline</span> <span style='color:#006600;'>s</span> <span style='color:#505050;'>(*</span><span style='color:#505050;'> print to stderr here </span><span style='color:#505050;'>*)</span>
+
+
+<span style='color:#505050;'>(*</span><span style='color:#505050;'> or in 1 line: </span>
+
+<span style='color:#505050;'>let _ = try main1 (List.tl (Array.to_list Sys.argv)); exit 0 with Failure s -&gt; prerr_endline s</span>
+
+<span style='color:#505050;'>*)</span>
+</pre>
+</body>
+</html>
