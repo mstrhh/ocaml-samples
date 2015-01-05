@@ -20,15 +20,15 @@ let statso =                 (* statistics object, to keep data and code togethe
 let hashh () =                (* create list of hash functions from module Hash, *)
   ((C.Hash.md5 ()), "MD5") ::   (* with description (in pairs, note the comma) *)
   ((C.Hash.sha1 ()), "plain SHA1") ::
-  ((C.Hash.ripemd160 ()), "RipeMD160") ::
-  ((C.Hash.sha2 224), "SHA2 224 bits") ::
-  ((C.Hash.sha2 256), "SHA2 256 bits") ::
-  ((C.Hash.sha2 384), "SHA2 384 bits") ::
-  ((C.Hash.sha2 512), "SHA2 512 bits") ::
-  ((C.Hash.sha3 224), "SHA3 224 bits") ::
-  ((C.Hash.sha3 256), "SHA3 256 bits") ::
-  ((C.Hash.sha3 384), "SHA3 384 bits") ::
-  ((C.Hash.sha3 512), "SHA3 512 bits") ::
+  ((C.Hash.ripemd160 ()), "RipeMD160") ::         (* watch out: the functions can only be used once!      *)
+  ((C.Hash.sha2 224), "SHAv2 224 bits") ::        (* so this can only be used in an inner loop/iter/map   *)
+  ((C.Hash.sha2 256), "SHAv2 256 bits") ::        (* because the call to hashh creates the functions anew *)
+  ((C.Hash.sha2 384), "SHAv2 384 bits") ::
+  ((C.Hash.sha2 512), "SHAv2 512 bits") ::
+  ((C.Hash.sha3 224), "SHAv3 224 bits") ::
+  ((C.Hash.sha3 256), "SHAv3 256 bits") ::
+  ((C.Hash.sha3 384), "SHAv3 384 bits") ::
+  ((C.Hash.sha3 512), "SHAv3 512 bits") ::
   []
   
 
@@ -45,7 +45,7 @@ let printone fn (h,msg) =
 
 let hashtoploop l =
   statso#printlapse "Program startup:";
-  List.iter (printone (List.hd l)) (hashh ())
+  List.iter (printone (List.hd l)) (hashh ())   (* todo: outer iteration on files, then sum up by algorythm *)
 
 (*
    We get a list, supposedly of file names.
