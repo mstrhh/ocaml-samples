@@ -1,4 +1,4 @@
-Repository ocaml-samples
+Repository ocaml-samples, alias ocaml examples
 =======================
 
 The ocaml software is open source, and the [packages](https://opam.ocaml.org/) are open source,
