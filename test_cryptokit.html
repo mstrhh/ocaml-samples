@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>test_cryptokit.ml</title>
+</head>
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+
+<span style='color:#898887;'>(*</span>
+<span style='color:#898887;'>   Speed test for Cryptokit hash functions.</span>
+<span style='color:#898887;'>   On the way we will show how to use the Hash module functions.</span>
+<span style='color:#898887;'>   Compile with: make testcrypto  -- see Makefile</span>
+<span style='color:#898887;'>*)</span>
+
+<span style='color:#006e28;'>module</span> <b>C</b> = <span style='color:#0057ae;'>Cryptokit</span>         <span style='color:#898887;'>(*</span><span style='color:#898887;'> shortening module names, you can still see where a function resides </span><span style='color:#898887;'>*)</span>
+<span style='color:#006e28;'>module</span> <b>P</b> = <span style='color:#0057ae;'>Printf</span>
+<span style='color:#006e28;'>module</span> <b>U</b> = <span style='color:#0057ae;'>Unix</span>
+
+<b>let</b> <span style='color:#004000;'>statso</span> =                 <span style='color:#898887;'>(*</span><span style='color:#898887;'> statistics object, to keep data and code together </span><span style='color:#898887;'>*)</span>
+  <b>object</b> <span style='color:#800000;'>(</span><span style='color:#004000;'>self</span><span style='color:#800000;'>)</span>
+    <b>val</b> <span style='color:#004000;'>mytime</span> = <span style='color:#0057ae;'>ref</span> <span style='color:#800000;'>(</span><b>U</b><b>.</b><span style='color:#004000;'>gettimeofday</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>  <span style='color:#898887;'>(*</span><span style='color:#898887;'> will be set upon startup </span><span style='color:#898887;'>*)</span>
+    <b>method</b> <span style='color:#004000;'>getlapse</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span> =     <span style='color:#898887;'>(*</span><span style='color:#898887;'> this gives you the net time in seconds between calls </span><span style='color:#898887;'>*)</span>
+      <b>begin</b> <b>let</b> <span style='color:#004000;'>old</span> = !<span style='color:#004000;'>mytime</span> <b>in</b> <span style='color:#004000;'>mytime</span> := <span style='color:#800000;'>(</span><b>U</b><b>.</b><span style='color:#004000;'>gettimeofday</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>; !<span style='color:#004000;'>mytime</span> -. <span style='color:#004000;'>old</span> <b>end</b>
+    <b>method</b> <span style='color:#004000;'>printlapse</span> <span style='color:#004000;'>msg</span> = <b>P</b><b>.</b><span style='color:#004000;'>printf</span> <span style='color:#bf0303;'>&quot;Timing %s  %2.5f sec</span><span style='color:#924c9d;'>\n</span><span style='color:#bf0303;'>%!&quot;</span> <span style='color:#004000;'>msg</span> <span style='color:#800000;'>(</span><span style='color:#004000;'>self</span>#<span style='color:#004000;'>getlapse</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>;
+  <b>end</b>                                      <span style='color:#898887;'>(*</span><span style='color:#898887;'> you better always put a semikolon after printf! </span><span style='color:#898887;'>*)</span>
+
+<b>let</b> <span style='color:#004000;'>hashh</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span> =                <span style='color:#898887;'>(*</span><span style='color:#898887;'> create list of hash functions from module Hash, </span><span style='color:#898887;'>*)</span>
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>md5</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;MD5&quot;</span><span style='color:#800000;'>)</span> ::   <span style='color:#898887;'>(*</span><span style='color:#898887;'> with description (in pairs, note the comma) </span><span style='color:#898887;'>*)</span>
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha1</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;plain SHA1&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>ripemd160</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;RipeMD160&quot;</span><span style='color:#800000;'>)</span> ::         <span style='color:#898887;'>(*</span><span style='color:#898887;'> watch out: the functions can only be used once!      </span><span style='color:#898887;'>*)</span>
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha2</span> <span style='color:#b08000;'>224</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv2 224 bits&quot;</span><span style='color:#800000;'>)</span> ::        <span style='color:#898887;'>(*</span><span style='color:#898887;'> so this can only be used in an inner loop/iter/map   </span><span style='color:#898887;'>*)</span>
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha2</span> <span style='color:#b08000;'>256</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv2 256 bits&quot;</span><span style='color:#800000;'>)</span> ::        <span style='color:#898887;'>(*</span><span style='color:#898887;'> because the call to hashh creates the functions anew </span><span style='color:#898887;'>*)</span>
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha2</span> <span style='color:#b08000;'>384</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv2 384 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha2</span> <span style='color:#b08000;'>512</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv2 512 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha3</span> <span style='color:#b08000;'>224</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv3 224 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha3</span> <span style='color:#b08000;'>256</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv3 256 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha3</span> <span style='color:#b08000;'>384</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv3 384 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>(</span><span style='color:#800000;'>(</span><b>C</b><b>.</b><b>Hash</b><b>.</b><span style='color:#004000;'>sha3</span> <span style='color:#b08000;'>512</span><span style='color:#800000;'>)</span>, <span style='color:#bf0303;'>&quot;SHAv3 512 bits&quot;</span><span style='color:#800000;'>)</span> ::
+  <span style='color:#800000;'>[</span><span style='color:#800000;'>]</span>
+  
+
+<b>let</b> <span style='color:#004000;'>calc_hash</span> <span style='color:#004000;'>h</span> <span style='color:#004000;'>file</span> =
+  <b>let</b> <span style='color:#004000;'>ic</span> = <b>Pervasives</b><b>.</b><span style='color:#004000;'>open_in_bin</span> <span style='color:#004000;'>file</span> <b>in</b>
+  <b>let</b> <span style='color:#004000;'>htemp</span> = <b>C</b><b>.</b><span style='color:#004000;'>hash_channel</span> <span style='color:#004000;'>h</span> <span style='color:#004000;'>ic</span> <b>in</b>
+    <b>Pervasives</b><b>.</b><span style='color:#004000;'>close_in</span> <span style='color:#004000;'>ic</span>;
+    <span style='color:#004000;'>htemp</span>
+
+<b>let</b> <span style='color:#004000;'>printone</span> <span style='color:#004000;'>fn</span> <span style='color:#800000;'>(</span><span style='color:#004000;'>h</span>,<span style='color:#004000;'>msg</span><span style='color:#800000;'>)</span> =
+  <b>let</b> <span style='color:#004000;'>_</span> = <span style='color:#004000;'>calc_hash</span> <span style='color:#004000;'>h</span> <span style='color:#004000;'>fn</span> <b>in</b>
+    <span style='color:#004000;'>statso</span>#<span style='color:#004000;'>printlapse</span> <span style='color:#004000;'>msg</span>
+    
+
+<b>let</b> <span style='color:#004000;'>hashtoploop</span> <span style='color:#004000;'>l</span> =
+  <span style='color:#004000;'>statso</span>#<span style='color:#004000;'>printlapse</span> <span style='color:#bf0303;'>&quot;Program startup:&quot;</span>;
+  <b>List</b><b>.</b><span style='color:#004000;'>iter</span> <span style='color:#800000;'>(</span><span style='color:#004000;'>printone</span> <span style='color:#800000;'>(</span><b>List</b><b>.</b><span style='color:#004000;'>hd</span> <span style='color:#004000;'>l</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span> <span style='color:#800000;'>(</span><span style='color:#004000;'>hashh</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span><span style='color:#800000;'>)</span>   <span style='color:#898887;'>(*</span><span style='color:#898887;'> todo: outer iteration on files, then sum up by algorythm </span><span style='color:#898887;'>*)</span>
+
+<span style='color:#898887;'>(*</span>
+<span style='color:#898887;'>   We get a list, supposedly of file names.</span>
+<span style='color:#898887;'>   Check if thery are file names.</span>
+<span style='color:#898887;'>   Then call the hash machine.</span>
+<span style='color:#898887;'>*)</span>
+<b>let</b> <span style='color:#004000;'>handle_list</span> <span style='color:#004000;'>l</span> = 
+  <b>let</b> <span style='color:#004000;'>cleanlist</span> = <b>List</b><b>.</b><span style='color:#004000;'>filter</span> <span style='color:#800000;'>(</span><b>fun</b> <span style='color:#004000;'>n</span> -&gt; <span style='color:#800000;'>(</span><b>Sys</b><b>.</b><span style='color:#004000;'>file_exists</span> <span style='color:#004000;'>n</span><span style='color:#800000;'>)</span> &amp;&amp; <span style='color:#004000;'>not</span> <span style='color:#800000;'>(</span><b>Sys</b><b>.</b><span style='color:#004000;'>is_directory</span> <span style='color:#004000;'>n</span><span style='color:#800000;'>)</span> <span style='color:#800000;'>)</span> <span style='color:#004000;'>l</span> <b>in</b>
+    <b>if</b> <span style='color:#800000;'>(</span><b>List</b><b>.</b><span style='color:#004000;'>length</span> <span style='color:#004000;'>cleanlist</span><span style='color:#800000;'>)</span> = <span style='color:#b08000;'>0</span>
+      <b>then</b> <span style='color:#004000;'>failwith</span> <span style='color:#bf0303;'>&quot;No filenames found. Please enter some file names on the command line&quot;</span>
+      <b>else</b> <span style='color:#004000;'>hashtoploop</span> <span style='color:#004000;'>cleanlist</span>
+  
+<span style='color:#898887;'>(*</span>
+<span style='color:#898887;'>   We expect one ore more filenames on the commandline,</span>
+<span style='color:#898887;'>   they will all be hashed.</span>
+<span style='color:#898887;'>*)</span>
+
+<b>let</b> <span style='color:#004000;'>main</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span> = <b>match</b> <b>Array</b><b>.</b><span style='color:#004000;'>to_list</span> <b>Sys</b><b>.</b><span style='color:#004000;'>argv</span> <b>with</b>
+  | <span style='color:#004000;'>exe</span> :: <span style='color:#800000;'>[</span><span style='color:#800000;'>]</span>      -&gt; <span style='color:#004000;'>failwith</span> <span style='color:#bf0303;'>&quot;Please enter one or more file names on the command line for use as hash input data.&quot;</span>
+  | <span style='color:#004000;'>exe</span> :: <span style='color:#004000;'>params</span>  -&gt; <span style='color:#004000;'>handle_list</span> <span style='color:#004000;'>params</span>
+  | <span style='color:#004000;'>_</span>              -&gt; <span style='color:#004000;'>failwith</span> <span style='color:#bf0303;'>&quot;Internal error reading command line arguments.&quot;</span>
+  
+
+<b>let</b> <span style='color:#004000;'>_</span> = <b>try</b> <span style='color:#004000;'>main</span> <span style='color:#800000;'>(</span><span style='color:#800000;'>)</span> <b>with</b> <span style='color:#0057ae;'>Failure</span> <span style='color:#004000;'>s</span> -&gt; <b>P</b><b>.</b><span style='color:#004000;'>eprintf</span> <span style='color:#bf0303;'>&quot;Message:</span><span style='color:#924c9d;'>\n</span><span style='color:#bf0303;'>%s</span><span style='color:#924c9d;'>\n</span><span style='color:#bf0303;'>!&quot;</span> <span style='color:#004000;'>s</span>;</pre>
+</body>
+</html>
