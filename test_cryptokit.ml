@@ -8,6 +8,7 @@
 module C = Cryptokit         (* shortening module names, you can still see where a function resides *)
 module P = Printf
 module U = Unix
+module F = Filename
 
 let statso =                 (* statistics object, to keep data and code together *)
   object (self)
@@ -19,7 +20,7 @@ let statso =                 (* statistics object, to keep data and code togethe
 
 let hashh () =                (* create list of hash functions from module Hash, *)
   ((C.Hash.md5 ()), "MD5") ::   (* with description (in pairs, note the comma) *)
-  ((C.Hash.sha1 ()), "plain SHA1") ::
+  ((C.Hash.sha1 ()), "plain SHA1") ::             (* the parens around the pair is necessary here.        *)
   ((C.Hash.ripemd160 ()), "RipeMD160") ::         (* watch out: the functions can only be used once!      *)
   ((C.Hash.sha2 224), "SHAv2 224 bits") ::        (* so this can only be used in an inner loop/iter/map   *)
   ((C.Hash.sha2 256), "SHAv2 256 bits") ::        (* because the call to hashh creates the functions anew *)
@@ -32,24 +33,28 @@ let hashh () =                (* create list of hash functions from module Hash,
   []
   
 
-let calc_hash h file =
+let calc_hash h file =                        (* do the calculation, h is the hash type, see cryptokit.mli *)
   let ic = Pervasives.open_in_bin file in
   let htemp = C.hash_channel h ic in
     Pervasives.close_in ic;
     htemp
 
-let printone fn (h,msg) =
+let printone fn (h,msg) =                     (* (h,msg) is from list of hashes *)
   let _ = calc_hash h fn in
     statso#printlapse msg
-    
 
-let hashtoploop l =
+let printall fn =
+  let _ = Sys.command (P.sprintf "cp %s /dev/null" (F.quote fn)) in (* copy file to load it into OS buffers *)
+    statso#printlapse (P.sprintf "File %s copied to zero device:" fn);
+    List.iter (printone fn) (hashh ())        (* filename is curried, (h,msg) is from iteration *)
+
+let hashtoploop li =
   statso#printlapse "Program startup:";
-  List.iter (printone (List.hd l)) (hashh ())   (* todo: outer iteration on files, then sum up by algorythm *)
+  List.iter printall li   (* todo: sum up by algorythm *)
 
 (*
    We get a list, supposedly of file names.
-   Check if thery are file names.
+   Check if they are file names.
    Then call the hash machine.
 *)
 let handle_list l = 
