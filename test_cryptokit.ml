@@ -74,4 +74,35 @@ let main () = match Array.to_list Sys.argv with
   | _              -> failwith "Internal error reading command line arguments."
   
 
-let _ = try main () with Failure s -> P.eprintf "Message:\n%s\n!" s;
+let _ = try main () with Failure s -> P.eprintf "Message:\n%s\n" s;
+
+(* sample run with big file: first with byte code, then with machine code
+
+Timing Program startup:  0.00001 sec
+Timing File /srv/VirtualBox/ubuntu144.vdi copied to zero device:  2.68471 sec
+Timing MD5  8.65138 sec
+Timing plain SHA1  17.44251 sec
+Timing RipeMD160  18.10484 sec
+Timing SHAv2 224 bits  26.45130 sec
+Timing SHAv2 256 bits  26.38856 sec
+Timing SHAv2 384 bits  16.68286 sec
+Timing SHAv2 512 bits  16.61406 sec
+Timing SHAv3 224 bits  23.97883 sec
+Timing SHAv3 256 bits  25.15498 sec                                                                                                       
+Timing SHAv3 384 bits  31.59372 sec                                                                                                       
+Timing SHAv3 512 bits  47.54531 sec                                                                                                       
+
+Timing Program startup:  0.00002 sec                                                                                                      
+Timing File /srv/VirtualBox/ubuntu144.vdi copied to zero device:  0.53251 sec                                          
+Timing MD5  6.96079 sec
+Timing plain SHA1  15.78836 sec
+Timing RipeMD160  16.40706 sec
+Timing SHAv2 224 bits  23.86009 sec
+Timing SHAv2 256 bits  23.94764 sec
+Timing SHAv2 384 bits  14.78549 sec
+Timing SHAv2 512 bits  16.48772 sec
+Timing SHAv3 224 bits  22.22666 sec
+Timing SHAv3 256 bits  23.30236 sec
+Timing SHAv3 384 bits  29.59063 sec
+Timing SHAv3 512 bits  49.46551 sec
+*)
