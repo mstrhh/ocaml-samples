@@ -1,4 +1,4 @@
-Repository ocaml-samples
+Repository ocaml-samples, alias ocaml examples
 =======================
 
 The ocaml software is open source, and the [packages](https://opam.ocaml.org/) are open source,
@@ -13,3 +13,4 @@ on list data.
 
 - [How to execute](how-to-execute.md) your program
 - a [small helper script](gitit.ml), well commented, to commit your changes to git repo
+- a try at [timing the hash functions](test_cryptokit.ml) from Cryptokit.Hash
