@@ -14,3 +14,4 @@ on list data.
 - [How to execute](how-to-execute.md) your program
 - a [small helper script](gitit.ml), well commented, to commit your changes to git repo
 - a try at [timing the hash functions](test_cryptokit.ml) from Cryptokit.Hash
+- a little [helper when compiling](watch_and_exec.ml) programs or the like
