@@ -3,6 +3,7 @@
    Speed test for Cryptokit hash functions.
    On the way we will show how to use the Hash module functions.
    Compile with: make testcrypto  -- see Makefile
+   Needs cryptokit >= 1.10 or there will not be all the hashes
 *)
 
 module C = Cryptokit         (* shortening module names, you can still see where a function resides *)
