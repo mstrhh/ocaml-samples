@@ -25,7 +25,7 @@ end
 let handler _ = controller#setstop
 
 let looper fn cmd =
-   let _ = Printf.printf "watching file:     \t%s\nexecuting on change:\t%s\n%!" fn cmd
+   let _ = Printf.printf "watching file:     \t%s\nexecuting on change:\t%s\n%!" fn cmd  (* printf "%!" causes a flush *)
    and oldmtime = ref (Unix.time ()) in     (* if we start with current time, we will execute only on next change *)
       while controller#continue do
         let stt = Unix.stat fn in                                               
