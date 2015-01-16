@@ -10,7 +10,7 @@
    Example:    watch-and-exec watch_and_exec.ml "make watch_and_exec"
    The executable is written with hyphens, you can change that if you want to.
 *)
-
+module U = Unix
 
 (* encapsulate the loop parameters in an object *)
 let controller = object
@@ -21,9 +21,12 @@ let controller = object
   method getdelay = delay
 end 
  
-
 let handler _ = controller#setstop
 
+let gettimestamp () =
+  let r = U.localtime (U.gettimeofday()) in
+   Printf.sprintf "%02i:%02i:%02i" r.U.tm_hour r.U.tm_min r.U.tm_sec
+   
 let looper fn cmd =
    let _ = Printf.printf "watching file:     \t%s\nexecuting on change:\t%s\n%!" fn cmd  (* printf "%!" causes a flush *)
    and oldmtime = ref (Unix.time ()) in     (* if we start with current time, we will execute only on next change *)
@@ -33,6 +36,7 @@ let looper fn cmd =
           then
             begin
               oldmtime := stt.Unix.st_mtime;
+              print_endline ("---------- " ^ (gettimestamp ()) ^ " ----------");
               try ignore (Sys.command cmd) with _ -> ()    (* ignore return code, ignore all execution errors*)
             end
           else
@@ -60,7 +64,12 @@ let main fn cmd = Sys.set_signal Sys.sigint (Sys.Signal_handle handler); looper 
 
 (* match on command line parameters and print errors. As you can see we match on an array. *)
 
-let _ = match Sys.argv with             
-  | [|_; fn; cmd|] -> if not (Sys.file_exists fn) then begin Printf.eprintf "File %s not found.\n" fn; exit 1 end else main fn cmd
-  | _ -> Printf.eprintf "Call with arguments:\n\t1. file to watch for change\n\t2. command to execute, quoted\n"; exit 1
+let _ = match Sys.argv with
+
+  | [|_; fn; cmd|] -> if not (Sys.file_exists fn)
+                      then begin Printf.eprintf "File %s not found.\n" fn; exit 1 end
+                      else main fn cmd
+                      
+  | _ -> Printf.eprintf
+  "This is the OCaml binary. Call with arguments:\n\t1. file to watch for change\n\t2. command to execute, quoted\n"; exit 1
 
