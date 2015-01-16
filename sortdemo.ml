@@ -30,19 +30,26 @@ and ymax =  G.size_y () ;;
 
 (*
     create an array of (int, int) point values, ready to plot with G.plots
-    Array.length is xmax+1, 
+    Array.length is xmax, the y value is random, we will sort it.
 *)
 let apoints = Array.init xmax (fun i -> (i, R.int ymax))
 
-(*
-    A single point is visually too small, so draw a rectangle around each point
-*)
+
+(*  A single point is visually too small, so draw a rectangle around each point *)
+
 let pointasrect (x, y) =
   let x' = max 0 (pred x)
   and y' = max 0 (pred y) in
    G.draw_rect x' y' 2 2
 
+(*  Draw the initial set of points *)
+
 let _ = Array.iter pointasrect apoints
+
+
+(*  we need a compare function for points, that only compares y, x is equal to the array position *)
+
+let cmpy (x, y) = Pervasives.compare y
 
 let _ = Thread.delay 20.0
 
