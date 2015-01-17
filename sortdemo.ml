@@ -1,4 +1,19 @@
 #!/usr/bin/env ocaml
+
+(*
+   This is a bubble sort demonstration with the help of the graphics module.
+   We create an array with the size of max window x index, and randomize
+   the values limited by max window y index.
+   The random numbers are always the same if you don't use a Random init function firest.
+   Then we start sorting the array, showing the changes while they are done.
+   
+   Possible extensions: gather statistics on true/different random values, test it on
+   sorted data, and on reverse sorted data.
+   
+   Here we use the scripting technique of ocaml, a native binary would be much faster.
+*)
+
+
 #use "topfind";;
 #thread;;
 #require "graphics";;
@@ -87,7 +102,7 @@ let _ = Thread.delay 2.0
 
 (* do bubble sort *)
 let _ = bubbleall apoints
-let _ = Printf.printf "Anzahl Vergleiche: %i, Anzahl Datenverschiebungen: %i\n%!" !cmpcntr !swapcntr
+let _ = Printf.printf "Number of compares: %i, number of data swaps: %i\n%!" !cmpcntr !swapcntr
 let _ = print_endline "press any key to stop the program..."
 
 let _ = try Thread.delay 30.0
