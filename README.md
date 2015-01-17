@@ -15,3 +15,4 @@ on list data.
 - a [small helper script](gitit.ml), well commented, to commit your changes to git repo
 - a try at [timing the hash functions](test_cryptokit.ml) from Cryptokit.Hash
 - a little [helper when compiling](watch_and_exec.ml) programs or the like: execute command when file changes
+- the sort_*.ml files are ocaml shell scripts that show the sort progression in a Graphics window
