@@ -111,11 +111,18 @@ let bubbleall ar =
 let _ = Array.iteri pointasrect apoints
 
 (* give some time to watch the initial distribution *)
-let _ = Thread.delay 2.0
+let _ = Thread.delay 1.0
+
+let testar = Array.copy apoints    (* we only work on the copy *)
 
 (* do bubble sort *)
-let _ = bubbleall apoints
+let _ = bubbleall testar
 let _ = Printf.printf "Number of compares: %i, number of data swaps: %i\n%!" !cmpcntr !swapcntr
+
+let sorted_orig = Array.copy apoints                      (* still preserve the original *)
+let _ = Array.sort Pervasives.compare sorted_orig         (* Library sort *)
+let _ = if testar <> sorted_orig then prerr_endline "Alarm! Array comparision gives FALSE." else print_endline "Result check: ok."
+
 let _ = print_endline "press any key to stop the program..."
 
 let _ = try Thread.delay 30.0

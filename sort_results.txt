@@ -1,0 +1,20 @@
+#
+#   terminal log of sample sort run
+#
+str@s131:~/github-samples> ./sort_bubble_1.ml 
+Number of compares: 348618, number of data swaps: 90832
+Result check: ok.
+press any key to stop the program...
+Program ./sort_bubble_1.ml stopped.
+
+str@s131:~/github-samples> ./sort_bubble_2.ml 
+Number of compares: 189284, number of data swaps: 90832
+Result check: ok.
+press any key to stop the program...
+Program ./sort_bubble_2.ml stopped.
+
+str@s131:~/github-samples> ./sort_selection_1.ml 
+Number of compares: 179700, number of data swaps: 594
+press any key to stop the program...
+Result check: ok.
+Program ./sort_selection_1.ml stopped.
