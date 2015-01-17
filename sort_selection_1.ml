@@ -47,7 +47,6 @@ and ymax =  G.size_y () ;;
 *)
 let apoints = Array.init xmax (fun _ -> Random.int ymax)
 
-
 (*  A single point is visually too small, so draw a rectangle around each point *)
 
 let pointasrect x y =
@@ -124,16 +123,21 @@ let selectall ar =
   done
 
 (*  Draw the initial set of points *)
-
 let _ = Array.iteri pointasrect apoints
 
 (* give some time to watch the initial distribution *)
-let _ = Thread.delay 2.0
+let _ = Thread.delay 1.0
 
-(* do bubble sort *)
-let _ = selectall apoints
+(* --- do sort --- *)
+let testar = Array.copy apoints    (* we only work on the copy *)
+let _ = selectall testar
 let _ = Printf.printf "Number of compares: %i, number of data swaps: %i\n%!" !comparecounter !swapcounter
 let _ = print_endline "press any key to stop the program..."
+
+(* sort original data with library function, then check result *)
+let sorted_orig = Array.copy apoints
+let _ = Array.sort Pervasives.compare sorted_orig
+let _ = if testar <> sorted_orig then prerr_endline "Alarm! Array comparision gives FALSE." else print_endline "Result check: ok."
 
 let _ = try Thread.delay 30.0
         with Unix.Unix_error (Unix.EINTR, "select", _) -> prerr_endline ("Program " ^ Sys.argv.(0) ^ " stopped.\n"); exit 0
