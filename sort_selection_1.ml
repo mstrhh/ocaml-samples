@@ -73,37 +73,6 @@ let swap a i1 i2 =    (* we get the index, clear the old dots, swap the values, 
     pointasrect i2 a.(i2)
     (*Thread.delay 0.0005*)
 
-(* OLD CODE do one run through the array, swapping elements as needed, return bool if swapped *)
-
-let bubble1 ar =
-  let issorted = ref true in             (* is sorted unless proven otherwise *)
-  for i = 0 to (Array.length ar - 2) do  (* upper limit -1 for zero based index. -1 for swap partner *)
-    incr comparecounter;
-    if ar.(i) >  ar.(i+1) then begin swap ar i (i+1); issorted := false end 
-  done;
-  !issorted
-
-(* with bubbling up it takes very long for small values at the high end to travel down.
-   We try to improve this by one walk up, and one walk down. This will speed up sorting
-   elements initially at the wrong end. *)
-
-let bubble1dwn ar =
-  let issorted = ref true in
-   for i = (Array.length ar - 1) downto 1 do  (* upper limit -1 for zero based index. -1 for swap partner *)
-    incr comparecounter;
-    if ar.(i) <  ar.(i-1) then begin swap ar i (i-1); issorted := false end 
-  done;
-  !issorted
-
-
-let bubbleall ar =
-  let continue = ref true in             (* we must enter the loop at least once *)
-  while !continue do                      
-    if not (bubble1 ar) then continue := not (bubble1dwn ar) else continue := false;
-    (* display *)
-    (* delay   *)
-    try Thread.delay 0.05 with _ -> ()   (* ignore interrupts here, any key would cause one *)
-  done
 
 (* inner and outer loops for selection and exchange *)
 
