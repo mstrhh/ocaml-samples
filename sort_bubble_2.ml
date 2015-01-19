@@ -10,7 +10,10 @@
    Possible extensions: gather statistics on true/different random values, test it on
    sorted data, and on reverse sorted data.
    
-   Bubble sort is 'improved' by runs going up and others going down. 
+   Bubble sort is 'improved' by runs going up and others going down.
+   
+   Update: there is a design flaw in this algorithm, can you find it? Hint: points are moving left and right one position.
+   This would have been difficult to find without live graphics.
 *)
 
 
