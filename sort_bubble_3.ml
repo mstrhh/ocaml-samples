@@ -74,8 +74,7 @@ let swap a i1 i2 =    (* we get the index, clear the old dots, swap the values, 
     a.(i2) <- temp;
     incr swapcntr;
     pointasrect i1 a.(i1);
-    pointasrect i2 a.(i2);
-    try Thread.delay 0.0005 with Unix.Unix_error (Unix.EINTR, "select", _) -> ()
+    pointasrect i2 a.(i2)
 
 (* do one run through the array, swapping elements as needed, return bool if swapped *)
 
