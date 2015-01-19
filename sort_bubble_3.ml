@@ -14,6 +14,8 @@
    Bubble3 sort is improved by limiting the run length at both ends: once you made the first
    run up, you know the biggest item has bubbled up. Same is true for "bubbling down".
    
+   Update: there is a design error in this algorithm, can you find it? Hint: points are moving left and right one position.
+   
 *)
 
 
