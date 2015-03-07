@@ -41,7 +41,7 @@ module Systemint : Intoperations =
   end
 
 (**
-   As alternative to int we can use Big_int, a pure OCaml implementation, no external .so/.dll 
+   Alternative to int: Big_int, a pure OCaml implementation, no external .so/.dll 
  *)
 module Bigocam : Intoperations =
   struct                (* the B defintion is just convenience to shorten the name *)
