@@ -63,8 +63,9 @@ let main fn cmd = Sys.set_signal Sys.sigint (Sys.Signal_handle handler); looper 
 
 
 (* match on command line parameters and print errors. As you can see we match on an array. *)
+(* the first pattern is: ignore executable name, pick filename and command                 *)
 
-let _ = match Sys.argv with
+let () = match Sys.argv with
 
   | [|_; fn; cmd|] -> if not (Sys.file_exists fn)
                       then begin Printf.eprintf "File %s not found.\n" fn; exit 1 end
