@@ -10,7 +10,8 @@
    Example:    watch-and-exec watch_and_exec.ml "make watch_and_exec"
    The executable is written with hyphens, you can change that if you want to.
 *)
-module U = Unix
+
+module U = Unix   (* short name, but keep module marker in identifiers *)
 
 (* encapsulate the loop parameters in an object *)
 let controller = object
@@ -29,20 +30,20 @@ let gettimestamp () =
    
 let looper fn cmd =
    let _ = Printf.printf "watching file:     \t%s\nexecuting on change:\t%s\n%!" fn cmd  (* printf "%!" causes a flush *)
-   and oldmtime = ref (Unix.time ()) in     (* if we start with current time, we will execute only on next change *)
+   and oldmtime = ref (U.time ()) in     (* if we start with current time, we will execute only on next change *)
       while controller#continue do
-        let stt = Unix.stat fn in                                               
-        if stt.Unix.st_mtime > !oldmtime       
+        let stt = U.stat fn in                                               
+        if stt.U.st_mtime > !oldmtime       
           then
             begin
-              oldmtime := stt.Unix.st_mtime;
+              oldmtime := stt.U.st_mtime;
               print_endline ("---------- " ^ (gettimestamp ()) ^ " ----------");
               try ignore (Sys.command cmd) with _ -> ()    (* ignore return code, ignore all execution errors*)
             end
           else
             try
               Thread.delay controller#getdelay
-            with Unix.Unix_error(Unix.EINTR, "select", _) -> Printf.printf "\n-----  %s stopped. -----\n" Sys.executable_name ; exit 0
+            with U.Unix_error(U.EINTR, "select", _) -> Printf.printf "\n-----  %s stopped. -----\n" Sys.executable_name ; exit 0
       done                                   
 (*
    I tried to install a Ctrl-C handler to set a flag and smoothly shut the loop down,
