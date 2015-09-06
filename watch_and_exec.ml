@@ -61,17 +61,16 @@ let looper fn cmd =
 
 let main fn cmd = Sys.set_signal Sys.sigint (Sys.Signal_handle handler); looper fn cmd
 
+let infoexit s = Printf.eprintf
+  "This is the OCaml binary %s. Call with arguments:\n\t1. file to watch for change\n\t2. command to execute, quoted\n" s;
+  exit 1
 
-
-(* match on command line parameters and print errors. As you can see we match on an array. *)
-(* the first pattern is: ignore executable name, pick filename and command                 *)
+(* match on command line parameters,
+   call functions or print errors. *)
 
 let () = match Sys.argv with
-
   | [|_; fn; cmd|] -> if not (Sys.file_exists fn)
                       then begin Printf.eprintf "File %s not found.\n" fn; exit 1 end
                       else main fn cmd
-                      
-  | _ -> Printf.eprintf
-  "This is the OCaml binary. Call with arguments:\n\t1. file to watch for change\n\t2. command to execute, quoted\n"; exit 1
-
+  | [|execname|] -> infoexit execname
+  | _           -> infoexit "watch-and-exec"
