@@ -11,7 +11,7 @@
    In this example one type and three functions are parameterized.
    
    20150306-1850-strobel
-   ocamlfind ocamlc -o test_functor -package num -linkpkg test_functor.ml 
+   ocamlfind ocamlc -custom -o test_functor -package num -linkpkg test_functor.ml 
 
 *)
 module type Intoperations = sig
@@ -53,13 +53,14 @@ module Bigocam : Intoperations =
   end
   
   
-module M  = Make(Systemint);;
+module M  = Make(Systemint)
 module Bg = Make(Bigocam)  ;;
 
 let v1 = M.from_string "22"
 and v2 = M.from_string "33" in
   Printf.printf "We can add integers: %s plus %s is %s\n" (M.to_string v1) (M.to_string v2) (M.to_string (M.add v1 v2));
 
-let b1 = Bg.from_string "12345678901234567890123"
-and b2 = Bg.from_string "4" in
-  Printf.printf "We can add big integers: %s plus %s is %s\n" (Bg.to_string b1) (Bg.to_string b2) (Bg.to_string (Bg.add b1 b2));
+let b1 = Bg.from_string (string_of_int max_int)
+and b2 = Bg.from_string "1" in
+  Printf.printf "We can add to maximum integer: %s plus %s is %s\n" (Bg.to_string b1) (Bg.to_string b2) (Bg.to_string (Bg.add b1 b2))
+  
