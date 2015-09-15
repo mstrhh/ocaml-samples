@@ -16,9 +16,9 @@
 *)
 module type Intoperations = sig
   type t
-  val add        : t -> t -> t
+  val add       : t -> t -> t
   val to_string  : t -> string
-  val from_string: string -> t
+  val to_number  : string -> t
 end
 
 (* The parameter definition for the module makes it a functor. *)
@@ -27,17 +27,17 @@ end
 module Make (Into : Intoperations) =
   struct
     type elt  = Into.t
-    let add         = Into.add
-    let to_string   = Into.to_string
-    let from_string = Into.from_string
+    let add       = Into.add
+    let to_string  = Into.to_string
+    let to_number  = Into.to_number
   end
   
 module Systemint : Intoperations =
   struct
-    type t = int
-    let add = (+)
-    let to_string   = Pervasives.string_of_int
-    let from_string = Pervasives.int_of_string
+    type t        = int
+    let add       = (+)
+    let to_string  = Pervasives.string_of_int
+    let to_number  = Pervasives.int_of_string
   end
 
 (**
@@ -48,19 +48,21 @@ module Bigocam : Intoperations =
     module B = Big_int  (* requires the num library                                *)
     type t   = B.big_int
     let add  = B.add_big_int
-    let to_string   = B.string_of_big_int 
-    let from_string = B.big_int_of_string
+    let to_string = B.string_of_big_int 
+    let to_number = B.big_int_of_string
   end
   
   
 module M  = Make(Systemint)
 module Bg = Make(Bigocam)  ;;
 
-let v1 = M.from_string "22"
-and v2 = M.from_string "33" in
-  Printf.printf "We can add integers: %s plus %s is %s\n" (M.to_string v1) (M.to_string v2) (M.to_string (M.add v1 v2));
+let v1 = M.to_number "22"
+and v2 = M.to_number "33" in
+  Printf.printf "We can add integers: %s plus %s is %s\n"
+     (M.to_string v1) (M.to_string v2) (M.to_string (M.add v1 v2));
 
-let b1 = Bg.from_string (string_of_int max_int)
-and b2 = Bg.from_string "1" in
-  Printf.printf "We can add to maximum integer: %s plus %s is %s\n" (Bg.to_string b1) (Bg.to_string b2) (Bg.to_string (Bg.add b1 b2))
+let b1 = Bg.to_number (string_of_int max_int)
+and b2 = Bg.to_number "1" in
+  Printf.printf "We can add to maximum integer: %s plus %s is %s\n"
+    (Bg.to_string b1) (Bg.to_string b2) (Bg.to_string (Bg.add b1 b2))
   
