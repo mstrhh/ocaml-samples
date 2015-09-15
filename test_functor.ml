@@ -8,6 +8,9 @@
    The result is a new module containing the combined definitions
    and expressions. You have to give it a name to use it.
    
+   The benefit is that your parameterized module can work with different
+   data types using the same API.
+   
    In this example one type and three functions are parameterized.
    
    20150306-1850-strobel
