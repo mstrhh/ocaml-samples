@@ -17,4 +17,4 @@ on list data.
 - a little [helper when compiling](watch_and_exec.ml) programs or the like: execute command when file changes
 - the sort_*.ml files are ocaml shell scripts that show the sort progression in a Graphics window
 
-Please have fun improving, extending and modifying the files.
+Please have fun improving, extending and modifying the files. Happy Ocamling.
