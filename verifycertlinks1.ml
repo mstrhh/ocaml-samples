@@ -38,11 +38,14 @@ let files_not_linked =
   in
   List.filter findinlinks files
 
-let () = print_endline ("Checking files and links in " ^ certpath ^ ":")
+let () = print_endline ("---- Checking files and links in " ^ certpath ^ " ----")
 
 let () = print_endline "Files without link: ";
          List.iter (fun s -> print_endline ("\t" ^ s)) files_not_linked
 
-let () = print_endline "Links without file: ";
-         List.iter (fun r -> if not (Sys.file_exists r.fname) then print_endline ("\t" ^ r.lname ^ ": no file " ^ r.fname)) links
+let () =
+  let f r = if not (Sys.file_exists r.fname) then print_endline ("\t" ^ r.lname ^ ": no file " ^ r.fname)
+  in
+  print_endline "Links without file: ";
+  List.iter f links
 
