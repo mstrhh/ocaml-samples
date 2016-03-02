@@ -27,7 +27,7 @@ let ls1 = Array.to_list (Sys.readdir ".");;
 let (links, files) =              (* partition list into 2 lists: one with linkdesc records,
                                                                   one with data filenames only *)
   let f (ls, fs) s =              (* inside fold: take a pair of lists and the current string  *)
-    try let fname = Unix.readlink s in ({lname=s; fname}::ls, fs)
+    try let fname = Unix.readlink s in ({lname=s; fname}::ls, fs)  (* append to lists as appropriate *)
     with  Unix.Unix_error (Unix.EINVAL, _,_) -> ( ls, s :: fs)
   in
   List.fold_left f ([], []) ls1   (* this is a combination of partition, map, filter *)
@@ -44,5 +44,5 @@ let () = print_endline "Files without link: ";
          List.iter (fun s -> print_endline ("\t" ^ s)) files_not_linked
 
 let () = print_endline "Links without file: ";
-         List.iter (fun r -> if not (Sys.file_exists r.fname) then print_endline ("\t" ^ r.lname)) links
+         List.iter (fun r -> if not (Sys.file_exists r.fname) then print_endline ("\t" ^ r.lname ^ ": no file " ^ r.fname)) links
 
