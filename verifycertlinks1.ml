@@ -14,7 +14,7 @@
 #use "topfind";;
 #require "unix";;
 
-                                  (* for testing the certificates directory can be changed *)
+                                  (* set certpath in the environment for testing *)
 let certpath = try Sys.getenv "certpath" with Not_found -> "/etc/ssl/certs" 
 
 let () = Sys.chdir certpath
